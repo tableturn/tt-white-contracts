@@ -26,6 +26,8 @@ contract Crowdfund {
   error TokenContractError();
   /// @notice Happens when there are insufficient funds somewhere.
   error InsufficientFunds(uint256 amount);
+  /// @notice Happens when overfunding occurs.
+  error CapExceeded();
 
   /// @notice Happens when an address is not an issuer member.
   error RequiresIssuerMemberCaller();
@@ -148,6 +150,8 @@ contract Crowdfund {
   function pledge(uint256 amount) public onlyDuring(Phase.Funding) onlyFastMember {
     // Make sure the amount is non-zero.
     if (amount == 0) revert InconsistentParameter("amount");
+    // Make sure this will not result in overfunding.
+    if (isCapped() && collected + amount > params.cap) revert CapExceeded();
     // Make sure that the message sender gave us allowance for at least this amount.
     uint256 allowance = params.token.allowance(msg.sender, address(this));
     if (allowance < amount) revert InsufficientFunds(amount - allowance);
