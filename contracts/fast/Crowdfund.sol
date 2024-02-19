@@ -172,6 +172,14 @@ contract Crowdfund {
   }
 
   /**
+   * @notice Queries whether the crowdfund is capped or not.
+   * @return A `boolean`.
+   */
+  function isCapped() public view returns (bool) {
+    return params.cap > 0;
+  }
+
+  /**
    * @notice Queries pages of pledgers based on a start index and a page size.
    * @param index is the offset at which the pagination operation should start.
    * @param perPage is how many items should be returned.
@@ -247,6 +255,7 @@ contract Crowdfund {
     uint256 collected;
     uint256 feeAmount;
     uint256 pledgerCount;
+    bool isCapped;
   }
 
   /**
@@ -263,7 +272,8 @@ contract Crowdfund {
         creationBlock: creationBlock,
         collected: collected,
         feeAmount: feeAmount(),
-        pledgerCount: pledgerCount()
+        pledgerCount: pledgerCount(),
+        isCapped: isCapped()
       });
   }
 
