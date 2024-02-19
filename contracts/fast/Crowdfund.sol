@@ -79,6 +79,8 @@ contract Crowdfund {
     IERC20 token;
     /// @notice An arbitrary reference string to keep track of.
     string ref;
+    /// @notice The cap of the crowdfund if specified.
+    uint256 cap;
   }
 
   /// @notice A version identifier for us to track what's deployed.
