@@ -26,6 +26,8 @@ contract Crowdfund {
   error TokenContractError();
   /// @notice Happens when there are insufficient funds somewhere.
   error InsufficientFunds(uint256 amount);
+  /// @notice Happens when overfunding occurs.
+  error CapExceeded();
 
   /// @notice Happens when an address is not an issuer member.
   error RequiresIssuerMemberCaller();
@@ -79,10 +81,12 @@ contract Crowdfund {
     IERC20 token;
     /// @notice An arbitrary reference string to keep track of.
     string ref;
+    /// @notice The cap of the crowdfund if specified.
+    uint256 cap;
   }
 
   /// @notice A version identifier for us to track what's deployed.
-  uint16 public constant VERSION = 2;
+  uint16 public constant VERSION = 3;
 
   /// @notice The initial params, as passed to the contract's constructor.
   Params private params;
@@ -146,6 +150,8 @@ contract Crowdfund {
   function pledge(uint256 amount) public onlyDuring(Phase.Funding) onlyFastMember {
     // Make sure the amount is non-zero.
     if (amount == 0) revert InconsistentParameter("amount");
+    // Make sure this will not result in overfunding.
+    if (isCapped() && collected + amount > params.cap) revert CapExceeded();
     // Make sure that the message sender gave us allowance for at least this amount.
     uint256 allowance = params.token.allowance(msg.sender, address(this));
     if (allowance < amount) revert InsufficientFunds(amount - allowance);
@@ -167,6 +173,14 @@ contract Crowdfund {
    */
   function pledgerCount() public view returns (uint256) {
     return pledgerSet.values.length;
+  }
+
+  /**
+   * @notice Queries whether the crowdfund is capped or not.
+   * @return A `boolean`.
+   */
+  function isCapped() public view returns (bool) {
+    return params.cap > 0;
   }
 
   /**
@@ -245,6 +259,7 @@ contract Crowdfund {
     uint256 collected;
     uint256 feeAmount;
     uint256 pledgerCount;
+    bool isCapped;
   }
 
   /**
@@ -261,7 +276,8 @@ contract Crowdfund {
         creationBlock: creationBlock,
         collected: collected,
         feeAmount: feeAmount(),
-        pledgerCount: pledgerCount()
+        pledgerCount: pledgerCount(),
+        isCapped: isCapped()
       });
   }
 

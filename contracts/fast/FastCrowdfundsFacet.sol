@@ -22,8 +22,16 @@ contract FastCrowdfundsFacet is AFastFacet {
   /**
    * @notice Creates a crowdfund contract.
    * @param token is the address of the ERC20 token that should be collected.
+   * @param beneficiary is the address that will receive the funds.
+   * @param ref is a reference for the crowdfund.
+   * @param cap is the maximum amount of pleged tokens that can be collected.
    */
-  function createCrowdfund(IERC20 token, address beneficiary, string memory ref) external onlyGovernor(msg.sender) {
+  function createCrowdfund(
+    IERC20 token,
+    address beneficiary,
+    string memory ref,
+    uint256 cap
+  ) external onlyGovernor(msg.sender) {
     address issuer = FastTopFacet(address(this)).issuerAddress();
     // Deploy a new Crowdfund contract.
     Crowdfund crowdfund = new Crowdfund(
@@ -34,7 +42,8 @@ contract FastCrowdfundsFacet is AFastFacet {
         beneficiary: beneficiary,
         basisPointsFee: LibFastCrowdfunds.data().crowdfundsDefaultBasisPointsFee,
         token: token,
-        ref: ref
+        ref: ref,
+        cap: cap
       })
     );
     // Register our newly created crowdfund and keep track of it.
