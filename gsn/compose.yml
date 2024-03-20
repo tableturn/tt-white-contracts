@@ -1,0 +1,65 @@
+version: "3.8"
+
+services:
+  gsn_deploy:
+    image: ts-opengsn
+    profiles: ["deploy"]
+    build:
+      context: ./
+    working_dir: /app/packages/deployer
+    entrypoint: ["yarn", "deploy"]
+    networks:
+      - eth_network
+    volumes:
+      - type: bind
+        source: ./deploy/config/deploy.ts
+        target: /app/packages/deployer/deploy/deploy.ts
+      - type: bind
+        source: ./deploy/config/hardhat.config.ts
+        target: /app/packages/deployer/hardhat.config.ts
+      - type: bind
+        source: ./deploy/config/deployment-config.ts
+        target: /app/packages/deployer/deployments/deployment-config.ts
+      - type: bind
+        source: ./deploy/data/deployments
+        target: /app/packages/deployer/deployments/networks
+    secrets:
+      - source: gsn_amoy_deployer_key_json
+        target: /app/packages/deployer/conf/keys.amoy.json
+      - source: gsn_dev_deployer_key_json
+        target: /app/packages/deployer/conf/keys.dev.json
+
+  gsn_relay:
+    image: ts-opengsn
+    build:
+      context: ./
+    working_dir: /app/packages/relay
+    stop_grace_period: 3s
+    command: [
+      "node",
+      "./dist/runServer.js",
+      "--config",
+      "/app/packages/relay/gsn-relay-config.json"
+    ]
+    networks:
+      - eth_network
+    ports:
+      - "8090:8090"
+    volumes:
+      - type: bind
+        source: ./relay/config/gsn-relay-config.json
+        target: /app/packages/relay/gsn-relay-config.json
+      - type: bind
+        source: ./relay/data
+        target: /gsn-data
+
+networks:
+  eth_network:
+    name: eth_network
+    external: true
+
+secrets:
+  gsn_amoy_deployer_key_json:
+    environment: GSN_AMOY_DEPLOYER_KEY_JSON
+  gsn_dev_deployer_key_json:
+    environment: GSN_DEV_DEPLOYER_KEY_JSON
