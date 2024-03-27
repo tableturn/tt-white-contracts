@@ -142,6 +142,13 @@ const config: HardhatUserConfig = {
       chainId: 80001,
       accounts: accounts("mumbai"),
     },
+    amoy: {
+      live: true,
+      saveDeployments: true,
+      url: "https://rpc-amoy.polygon.technology",
+      chainId: 80002,
+      accounts: accounts("amoy"),
+    },
     polygon: {
       live: true,
       saveDeployments: true,
@@ -194,11 +201,17 @@ const config: HardhatUserConfig = {
       signedTx:
         "0xf8a98085174876e800830186a08080b853604580600e600039806000f350fe7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe03601600081602082378035828234f58015156039578182fd5b8082525050506014600cf3840225fcdba01590b43af70aef60a9342a33eaf1536b07df9ba36e96f0e5102485b4f23f7720a01e6266145487736a1809cf67cbc0a86d9eee3438cc97e0bd523694f3f3e9e1cb",
     },
-    // Polygon Testnet.
+    // Polygon Testnet - Mumbai.
     80001: {
       ...DEPLOYER_FACTORY_COMMON,
       signedTx:
         "0xf8a88085174876e800830186a08080b853604580600e600039806000f350fe7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe03601600081602082378035828234f58015156039578182fd5b8082525050506014600cf383027125a05f9ad6b5fd17d50ec5b92745a600a89fe389f8d4bae2f06189efe0543374acb2a0570b22388a260bc0d2ace93767114ab9a4f7776177778b2293c1233118c725b5",
+    },
+    // Polygon Testnet - Amoy.
+    80002: {
+      ...DEPLOYER_FACTORY_COMMON,
+      signedTx:
+        "0xf8a88085746a52880f830174a08080b853604580600e600039806000f350fe7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe03601600081602082378035828234f58015156039578182fd5b8082525050506014600cf383027128a0983a0a2de9444f60b6405a227cce730f6d1025f02ff2d37c638e976389f8a073a07846164338796cbf55c45d80f7b328ff55f495d0264574a7cb876673808161bc",
     },
     // Polygon Mainnet.
     137: {
