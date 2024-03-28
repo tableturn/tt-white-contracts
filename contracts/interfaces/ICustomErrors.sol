@@ -7,6 +7,7 @@ interface ICustomErrors {
   error DuplicateEntry();
   error InconsistentParameter(string param);
   error InsufficientFunds(uint256 amount);
+  error InterfaceNotSupported(string);
   error InternalMethod();
   error InvalidCrowdfundBasisPointsFee(uint32 fee);
   error InvalidPhase();

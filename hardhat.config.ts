@@ -10,11 +10,13 @@ import { DEPLOYER_FACTORY_COMMON, accounts, abiFilter } from "./src/utils";
 import { ISSUER_FACETS } from "./tasks/issuer";
 import { MARKETPLACE_FACETS } from "./tasks/marketplace";
 import { FAST_FACETS } from "./tasks/fast";
+import { PAYMASTER_FACETS } from "./tasks/paymaster";
 
 // Import all of our tasks here!
 import "./tasks/accounts";
 import "./tasks/issuer";
 import "./tasks/marketplace";
+import "./tasks/paymaster";
 import "./tasks/fast";
 import "./tasks/upgrades";
 
@@ -91,8 +93,6 @@ const config: HardhatUserConfig = {
         ["Facet$", "Minted(uint256,string,address)"],
         ["Facet$", "Burnt(uint256,string,address)"],
         ["Facet$", "FastTransfer(address,address,address,uint256,string)"],
-        ["Facet$", "Transfer(address,address,uint256)"],
-        ["Facet$", "Approval(address,address,uint256)"],
         ["Facet$", "Disapproval(address,address,uint256)"],
         [
           "Facet$",
@@ -119,6 +119,21 @@ const config: HardhatUserConfig = {
         "IDiamondLoupe",
         "IFastEvents",
         ...FAST_FACETS,
+      ],
+    },
+    {
+      name: "Paymaster",
+      filter: abiFilter([
+        // Event types.
+        // ...
+        // Error types.
+        // ...
+      ]),
+      include: [
+        "IERC173",
+        "IDiamondCut",
+        "IDiamondLoupe",
+        ...PAYMASTER_FACETS,
       ],
     },
   ],

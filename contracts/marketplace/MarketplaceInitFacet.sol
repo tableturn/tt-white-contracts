@@ -3,6 +3,7 @@ pragma solidity 0.8.10;
 
 import "../common/lib/LibHasMembers.sol";
 import "../common/lib/LibHasAutomatons.sol";
+import "../common/lib/LibHasForwarder.sol";
 import "../common/AHasMembers.sol";
 import "../common/AHasAutomatons.sol";
 import "../interfaces/IERC165.sol"; // Interface Support.
@@ -61,5 +62,12 @@ contract MarketplaceInitFacet is AMarketplaceFacet {
 
     // Initialize automatons storage.
     LibHasAutomatons.data().version = LibHasAutomatons.STORAGE_VERSION;
+
+    // ------------------------------------- //
+
+    // Initialize forwarder storage.
+    LibHasForwarder.Data storage forwarderData = LibHasForwarder.data();
+    forwarderData.version = LibHasForwarder.STORAGE_VERSION;
+    forwarderData.forwarderAddress = address(0);
   }
 }
